@@ -11,10 +11,11 @@ mod utils;
 pub use env::Env;
 pub use val::Val;
 
+#[derive(Debug)]
 pub struct Parse(statement::Statement);
 
 impl Parse {
-    fn eval(&self, env: &mut Env) -> Result<Val, String> {
+    pub fn eval(&self, env: &mut Env) -> Result<Val, String> {
         self.0.eval(env)
     }
 }
