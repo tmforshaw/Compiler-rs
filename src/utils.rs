@@ -1,3 +1,5 @@
+const WHITESPACE: &[char] = &[' ', '\n'];
+
 pub(crate) fn extract_ident(s: &str) -> Result<(&str, &str), String> {
     // Don't allow starting numbers for identifier
     let input_starts_with_alphabetic = s
@@ -18,11 +20,15 @@ pub(crate) fn extract_digits(s: &str) -> Result<(&str, &str), String> {
 }
 
 pub(crate) fn extract_whitespace(s: &str) -> (&str, &str) {
-    take_while(|c| c == ' ', s)
+    take_while(|c| WHITESPACE.contains(&c), s)
 }
 
 pub(crate) fn extract_whitespace_non_empty(s: &str) -> Result<(&str, &str), String> {
-    take_while_careful(|c| c == ' ', s, "Expected a space".to_string())
+    take_while_careful(
+        |c| WHITESPACE.contains(&c),
+        s,
+        "Expected whitespace".to_string(),
+    )
 }
 
 pub(crate) fn take_while(accept: impl Fn(char) -> bool, s: &str) -> (&str, &str) {
@@ -109,12 +115,17 @@ mod tests {
     fn do_not_extract_spaces1_when_input_does_not_start_with_them() {
         assert_eq!(
             extract_whitespace_non_empty("blah"),
-            Err("Expected a space".to_string()),
+            Err("Expected whitespace".to_string()),
         );
     }
 
     #[test]
     fn tag_word() {
         assert_eq!(tag("let", "let a"), Ok(" a"));
+    }
+
+    #[test]
+    fn extract_newlines_or_spaces() {
+        assert_eq!(extract_whitespace(" \n   \n\nabc"), ("abc", " \n   \n\n"));
     }
 }
