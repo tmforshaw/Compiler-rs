@@ -3,7 +3,7 @@ use crate::expr::Expr;
 use crate::utils;
 
 #[derive(Debug, PartialEq)]
-pub struct BindingDef {
+pub(crate) struct BindingDef {
     pub name: String,
     pub val: Expr,
 }
@@ -30,7 +30,7 @@ impl BindingDef {
         ))
     }
 
-    pub(crate) fn eval(&self, env: &mut Env) -> Result<(), String> {
+    pub fn eval(&self, env: &mut Env) -> Result<(), String> {
         env.store_binding(self.name.clone(), self.val.eval(env)?);
         Ok(())
     }

@@ -9,7 +9,7 @@ pub(crate) struct Env<'parent> {
 }
 
 impl<'parent> Env<'parent> {
-    pub(crate) fn store_binding(&mut self, name: String, val: Val) {
+    pub fn store_binding(&mut self, name: String, val: Val) {
         self.bindings.insert(name, val);
     }
 

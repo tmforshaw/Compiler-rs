@@ -1,16 +1,15 @@
 use crate::env::Env;
-use crate::expr::Expr;
 use crate::statement::Statement;
 use crate::utils;
 use crate::val::Val;
 
 #[derive(Debug, PartialEq)]
-pub struct Block {
+pub(crate) struct Block {
     pub stmts: Vec<Statement>,
 }
 
 impl Block {
-    pub fn new(s: &str) -> Result<(&str, Self), String> {
+    pub(crate) fn new(s: &str) -> Result<(&str, Self), String> {
         let s = utils::tag("{", s)?;
         let (s, _) = utils::extract_whitespace(s);
 
