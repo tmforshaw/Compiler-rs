@@ -2,6 +2,8 @@ use crate::env::Env;
 use crate::utils;
 use crate::val::Val;
 
+use super::func_call::FuncCall;
+
 #[derive(Debug, PartialEq, Clone)]
 pub(crate) struct BindingUsage {
     pub(crate) name: String,
@@ -20,25 +22,40 @@ impl BindingUsage {
     }
 
     pub(super) fn eval(&self, env: &Env) -> Result<Val, String> {
-        env.get_binding(&self.name)
+        env.get_binding(&self.name).or_else(|error_msg| {
+            if env.get_func(&self.name).is_ok() {
+                FuncCall {
+                    callee: self.name.clone(),
+                    params: Vec::new(),
+                }
+                .eval(env)
+            } else {
+                Err(error_msg)
+            }
+        })
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::expr::Expr;
+    use crate::{
+        binding_def::BindingDef,
+        expr::{Expr, Number},
+        statement::Statement,
+    };
 
     use super::*;
 
     #[test]
-    fn parse_binding_usage() {
+    fn parse_binding_def() {
         assert_eq!(
-            BindingUsage::new("abc"),
+            Statement::new("let a = 10"),
             Ok((
                 "",
-                BindingUsage {
-                    name: "abc".to_string(),
-                },
+                Statement::BindingDef(BindingDef {
+                    name: "a".to_string(),
+                    val: Expr::Number(Number(10)),
+                }),
             )),
         );
     }
