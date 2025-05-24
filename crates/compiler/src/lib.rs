@@ -1,12 +1,12 @@
 #![allow(dead_code)]
 
 mod binding_def;
-mod expr;
-mod statement;
-mod val;
-
 mod env;
+mod expr;
+mod func_def;
+mod statement;
 mod utils;
+mod val;
 
 pub use env::Env;
 pub use val::Val;
